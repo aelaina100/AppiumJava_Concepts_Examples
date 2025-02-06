@@ -1,0 +1,24 @@
+ChangeLogs & All Appium Java related:   https://github.com/appium/java-client
+
+Issue with  H_scrolling.java====>  scroll with JavaScriptExecutor method is not functioning properly: When the function is used as a utility. Whereas, if it's
+coded in the .java class file, will function properly. ChatGPT: "Appium detects that an element is displayed even though it's not visible to user."
+
+Include all swiping gestures codes as utilities in the base file (For now).
+
+ Make the included pdf document (At the project level = where the pom.xml file is) readable.
+
+ In "G_longPress_javaScriptExecutorTest" provide an example for long pressing on the element using coordinates instead of a locator.
+ 
+ Adding the global implicit wait, in the base file, in the @BeforeClass method (That starts the Appium server programmatically) renders
+ "this.driver" error. Fix it !
+ 
+ Eventually Explicit waits are to be utilized instead of the current implicit wait. 
+ 
+ revisit: try catch statement:
+ 	1- Scenarios where it is necessary to include the final statement in automation.
+ 	2- The general (Exception e) with  The message (e.getMessage()) &The stack trace (e.printStackTrace())
+ 	3- Sometimes it is necessary to be more specific about the exception one wants to catch (instead of Exception e)
+ 		so, come up with a list of these specific exceptions.
+ 	4-Adjust all test cases using the try catch statement accordingly.
+ 
+ 

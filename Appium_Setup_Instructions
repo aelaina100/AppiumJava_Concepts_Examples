@@ -1,0 +1,366 @@
+ Appium is an open-source cross platform (Android & iOS) mobile automation tool for testing native, browser, &
+ hybrid mobile apps.
+
+
+                              3 different techniques of Appium Mobile Automation: 
+
+ 1- Automation for Native app :             [App exclusively built for either an Android or an iOS operating system.]
+ 2- Automation for Hybrid Android app  :    [App Involving Android + Web]
+ 3- Automation for Hybrid iOS Hybrid app:   [App Involving iOS + Web]
+
+
+ Appium utilizes WebDriver Json wire (Just as Selenium) but PLUS additional capabilities that support mobile
+ gestures such as scrolling, zooming, swiping, pressing, & dragging/dropping.
+ ------------------------------------------------------------------------------------------------------------
+ 
+ Other mobile automation tools out there: 1- Selenium Android (Only for Android).
+                                          2- Kalabash (Only for iOS).
+                                          2- Robotium (Only for iOS).
+                                         
+and a few other tools that only work for one platform. However; Appium is the ONLY cross platform mobile automation tool.
+
+Appium can be used with Java, C#, Python, Ruby, & Javascript (Just like Selenium Web Driver).
+
+
+                                              
+******************************************************************Appium architecture***************************************************************************************
+                 ********************For the diagram, consult "Appium Architecture.png" situated at the project level****************
+
+ Appium client code is our Appium script. 
+ Appium Server sits on node js. This server has to be started on some port (4723) before executing the scripts. It keeps on listening 
+ so that when the client code is executed, this code has instructions to be re-directed via a port (4723) in a JSON format [ Hence to the Appium server]
+ As the Appium server expects a Json input. [No matter what language one uses: Java, Python, etc. Once the code is executed, then Appium
+ will covert this code in Json format.
+ 
+ Now- This Appium server has the capability of interpreting this Json file, emulating user interactions on Android devices using UIAutomator2
+ or simulating user interactions on iOS devices using XCUITest. Then, data travels in the opposite direction from the devices, as a response,
+ in Json format being relayed by the Appium server back to the Appium Client code that has the ability to parse the response Json giving
+ the output to the user.
+ 
+ UIAutomator & XCUITest are frameworks similar to the 3rd party browser drivers in Selenium where the browsers' developers for Chrome, firefox,
+ Safari, etc. will not allow a third party API (such as Selenium) to directly invoke their browsers (For security reasons). Hence, instead,
+ these browser developers themselves developed a 3rd party browser drivers and made it available for Selenium users in order to use them
+ for invoking the browsers.
+ 
+ Same concept applies for Appium:  Android and iOS developers will not allow a third party API (Such as Appium) to directly automate mobile Apps (Whether by using 
+ a real device, or an emulator, or a simulator to emulate/simulate user interactions on virtual mobile devices). Therefore, they created the  UIAutomator2 framework (Google) & 
+ & the XCUITest framework (Apple), making it available for Appium users in order to automate mobile Apps.
+ 
+* Summary:
+ 	UI Automator is a UI testing framework introduced by google to facilitate automation on a real android device or an emulator (Virtual Android device).
+ 	Appium leverages this UIAutomator with its own wrapper (On top of the UIAutomator), coming up with UIAutomator2 driver to automate the Android Apps.
+ 
+ 
+ ==================================================================================================================================================
+ 
+ Starting with Appium: (A quick set-up to get Appium up and running as real-time Appium set-up instructions will be provided later in the notes)
+ 
+ 1- Download and install the latest Java JDK on your local machine. It has to be the exact same version that Jenkins will run on. 
+ 2- Configure System variables so that Java compiler is now usable by your system:
+  		Java_Home will point to the correct JDK version that compiles the Java code (If multiple JDK's are installed).
+  		
+  		
+ 3* For Windows users =====>
+ 
+  A- Download & install Android Studio. Then, find the path for the built-in Android SDK where 4 values will be set in System Variables [To work with Android apps].
+ 
+      [Ex: Built-in Android SDK is found in  C:\Users\AE\AppData\Local\Android\Sdk] where 'AppData' might be in an invisible mode.
+      Note: Android SDK [provides the emulator PLUS tools for developing Android applications, including compilers, & debuggers == All inside the folder]. 
+      Therefore, it needs to be included in the System variables so that it's usable by your system.
+      
+      
+      
+******************************************** 4 values to set in the 'System Variables' section: ANDROID_HOME, and 3 'Path' values ********************************************
+              
+     1- Setting 'ANDROID_HOME': In System variables section, Click on 'New':
+      	Variable name :  ANDROID_HOME
+        Variable value:  C:\Users\AE\AppData\Local\Android\Sdk 
+        
+     2- Setting 3 'paths' values:     
+      
+      Now, inside the Sdk folder [C:\Users\AE\AppData\Local\Android\Sdk], you'll NOT see the 'Tools' folder.  To make it visible:
+     
+      1- Go to the folder where Android Studio has been installed: C:\Program Files\Android\Android Studio
+      2- Android Studio > bin > Studio64  [In order to Launch Android Studio]
+      3- New Project > Empty Activity > 'New project' window appears > Finish.
+      4- Android Studio is now launched with Jars being imported as displayed in the bottom right corner. Wait till it's complete.
+      
+      5- Navigate to: Tools > You should now see 'Device Manager' & 'SDK Manager'.
+      6- Click on 'SDK Manager' > 'Settings' window appears > Select 'SDK Tools' tab (Because we need to have 'Tools' folder, inside the 'Sdk' folder, visible)
+      7- Un-check 'Hide Obsolete packages' > In the list, the check box of "Android SDK Tools(Obsolete) appears ! > Select it.
+      8- Click on Apply > Components will be installed > msg: "Installing Android SDK Tools in:  C:\Users\AE\AppData\Local\Android\Sdk\tools.
+      9- Finish > Ok
+      10. Now 'Tools' folder should be present in:   C:\Users\AE\AppData\Local\Android\Sdk.
+      
+      
+      Navigate to:  C:\Users\AE\AppData\Local\Android\Sdk\tools    &    Copy the path
+      In System Variables on bottom, double-click on 'path'> New > and paste it.
+      
+      
+      Navigate to:  C:\Users\AE\AppData\Local\Android\Sdk\tools\bin    &    Copy the path
+      In System variables on bottom, double-click on 'Path' > New> and paste it.
+      
+      navigate to: C:\Users\AE\AppData\Local\Android\Sdk\platform-tools  &    Copy the path    
+      In System variables on bottom, double-click on 'Path' > New> and paste it.             [Not mandatory but might be good to have]
+*******************************************************************************************************************************************************************************      
+      Note: Node.js is a software that has a command prompt.
+  	 	    In this command prompt, npm commands are used to install any node related package/module module such as Appium server, angular js, Protractor, etc.
+  	 	    
+  	 	    Ex: On npm website (As of now: https://www.npmjs.com/), search for 'Appium':
+  	 	        One would see in the results: appium (Automation for Apps), etc, etc, PLUS webDriverio (Also a node related package used for Selenium with JavaScript)
+  	 	        So, one would get the displayed appium in results (Appium is nothing but Jars of libraries) using an npm command.
+  	 	    
+  	 	    
+  	 	    npm stands for 'Node Package Manager'.
+  	 	    From Wiki: ""npm is a package manager for the JavaScript programming language maintained by npm, Inc., a subsidiary of GitHub. npm is the default package manager 
+  	 	    for the JavaScript runtime environment Node.js and is included as a recommended feature in the Node.js installer""
+
+It consists of a command line client, also called npm, and an online database of public and paid-for private packages, called the npm registry. The registry is accessed via the client, and the available packages can be browsed and searched via the npm website. The package manager and the registry are managed by npm, Inc. 
+      
+  B- Download & install Node.js  [.msi file for Windows. Currently under the tab of 'pre-build installer'] 
+  	 It's path can be found at: C:\Program Files\nodejs.
+  	 
+  	 Under, 'System Variables' > New >   Variable name:   NODE_HOME
+  	                                     Variable value:  C:\Program Files\nodejs
+  	                                     
+  	 Navigate to: C:\Program Files\nodejs\node_modules\npm\bin   & Copy the path
+  	 In System Variables on bottom, double-click on 'path'> New > and paste it.
+  	 
+  	 Notice the npm folder !
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  	 	
+  C- Configure the Emulator virtual android device on which an Android application is deployed and automated using Appium.
+  		Launch the Android Studio > File > New > New Project > Empty Activity (Or basic Activity) > New project window appears > Finish
+  		> Notice: Loading configurations are shown in the bottom right corner (Loading everything depends on RAM).
+  		  As multiple pluggins are integrated into the studio.
+  		  
+  		  Now, Tools > Device manager (Where a customized virtual android device is created) > In 'Device Manager' window click on the + sign
+  		       > Create Virtual Device > Now: Choose a physical device (Each device has Pixels, physical dimensions, & a resolution).
+  		       
+  		       	Select: Pixel 3a  5.6" > Next > System Image: (Operating System OS for Android) [Go with whatever is selected by default) unless,
+  		        you have a specific OS requirement to deploy on and automate the app > Next > In Android Virtual Device (AVD) window: Give device name (AVD name)
+  		        + remember this exact name of the device as it needs to be inputed in appium code in order to invoke this particular emulator (Android virtual device).
+  		        
+  		        Now, examine "Show Advanced Setting" button: This is where you can increase the RAM if virtual device is very slow & resulting in test failures.
+  		        But, keep the default RAM and other values as they're checking how the device is performing.
+  		        
+  		        Now, the device will be shown in Android Studio, under Device Manager.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Windows:
+ D- Install Appium Server via Node.js command prompt (Run as Admin) using the npm command of:   npm install -g appium (That's it !)
+  	[-g: means installing appium globally so it could be used anywhere in your system].
+  	
+  	  
+    So this command prompt is available because we downloaded node.js, installed it, and set it in System Variables so that it is usable by our system.
+    if you do not set node.js in Systems variables, then npm commands throws an error message conveying that 'npm' is not recognized by internal or external command.
+    
+   To check if appium was installed:  appium --version [When appium was installed = Some node module folders will be downloaded, where on Windows, it can be found 
+   in: C:\Users\AE\AppData\Roaming\npm\node_modules\appium\build\lib\main.js (Check it out) [AppData folder can be in an invisible mode. So ensure that it becomes visible].
+   . Now, the "main.js" is what invokes Appium Server !
+   
+   Now, run Appium Server in command line using :  appium (That's it !)  ["" Welcome to Appium ""] is a message on the first line.
+   Where the following message is normal: " No plugins activated. Use the --use-plugins flag with names of plugins to activate".
+   [Once again, its that "main.js" that invokes the Appium Server]
+   
+   
+   
+   Now, install the  UIAutomator2 & XCUITest frameworks (Appium drivers):
+   	1- Launch Node.js command prompt
+   	2- Type in the command: appium driver list [A list of drivers appears]
+   	
+   	3-Type in: appium driver install uiautomator2
+    4-Type in: appium driver install xcuitest
+   
+   
+   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  		 
+  E- Download Eclispe editor, Create a Maven project (pom.xml) file, Include dependencies for Appium and TestNG framework.
+      Eclipse is the most famous editor for all Java related projects [Intelligi editor could also be used instead]
+      
+      Google Eclipse> Select 'Download Packages' > Install: Eclipse IDE for Java Developers (Where it includes 'maven' in the description) 
+      .Don't choose 'Eclipse IDE for Enterprise Java and Web Developers' as this is going to slow down your system.
+      
+      Now, Open eclipse and create a Maven project: File > New > Maven project. [Note that creating a maven project has been made easy as of recently just
+      following these steps. Before that, creating maven project involved using command lines where a maven skeleton (A collection of folders) is created 
+      and saved somewhere on your local PC. Then, this skeleton is imported into eclipse. This old way of creating a maven project is documented in the hand-
+      written notes].
+      
+      So for: Open Eclipse > File > New > Maven project> Now, one has to select the maven temple of: "maven-archetype-quickstart" (For Apache). This is one of the most 
+      popular templates in test automation projects. Where one has to specify group ID (Package name) & Artifact ID (Project name). Now, once project is created 
+      in the left side, expand on it. You'll notice that a pom.xml file has been created. This is the heart of maven !. Maven is nothing but a pom.xml file !. 
+      SO whenever you hear 'maven', then = pom.xml file ! pom.xml file = Maven ! (Can't emphasize enough !)
+      
+      Now, in maven (pom.xml file), you will notice a  maven dependency automatically included with the values of GroupID and ArtifactID That I
+      specified during the creation of the Maven project. J-unit dependency(s) will also be included but REMOVE it/them ALL, as our project will be using
+      TestNG framework which is much more advanced and the ONLY thing to be used in real-time projects. 
+      
+      
+      
+      >>>> NOW IMMEDIATELY: Download & install Maven, & Configure its System Variables.
+       [So that Maven is usable by our system in terms of using maven commands to execute scripts. Keep on reading the notes as this will be elaborated on].
+       
+       Type in: Maven download. The page should also display the latest Java version compatible with Maven.
+       			Windows: Download bin.zip
+       			Mac    : Download bin.tar.gz           Also: Don't download the src folder as one would get the entire Maven code which we do not need.
+      
+       Unzip it in the desired folder. For example: C:\Program Files\apache-maven-3.9.9
+       
+      In System Variables: 
+      
+      MAVEN_HOME: C:\Program Files\apache-maven-3.9.9   & In Path: C:\Program Files\apache-maven-3.9.9\bin
+      Now, to ensure that Maven is recognizable/ has been set in System variables: Launch command line and type in: mvn --version (Should give the coorect version !)
+      ------------------------------------------------------------------
+      
+      
+      
+      ***First thing, Are we going to use Selenium, Appium, or Rest API ? 
+      Answer is, Appium (Appium is nothing but library jars). So, in Maven repository (https://mvnrepository.com/) type in, "Appium".. select Appium Java Client.
+      & Choose the latest version & copy the dependency. Paste it into maven (pom.xml file) UNDER <dependencies> and NOT UNDER <dependencyManagement>
+      
+      and SAVE. You should be able to see Jars being imported AS LONG AS the setting of:    Project > Build Automatically is selected. 
+      and if Not: Right-click on the project > Maven >Update Project.
+      So now, Appium Jars should be present under the folder of "Maven Dependencies" under the project.
+      
+      
+      
+      ***Secondly, Included TestNG dependencies: [First ensure that TestNG version is compatible with the installed Java version set up in System Variables].
+      
+      So, in Maven repository (https://mvnrepository.com/) type in, "TestNG". Choose the latest versions. Copy & paste 
+      the dependency in maven (pom.xml file) and SAVE.
+      so that, you should be able to see Jars being imported AS LONG AS the setting of:    Project > Build Automatically is selected. 
+      and if Not: Right-click on the project > Maven >Update Project.
+      So now, TestNG Jars should be present under the folder of "Maven Dependencies" under the project.
+      
+      CRUCIAL NOTE:******= As of now, All dependencies in Maven (pom.xml file) will have their respective jars included under 
+                           the 'Maven Dependencies' folder in the project. In the case that, test cases/methods are being compiled 
+                           by a TestNG version that is different than the one specified in the test Ng dependency included in 
+                           maven (the pom.xml file), then==========>
+                           This is USUALLY due to other version of testNG jars being present under a folder named 'TestNG'
+                           (This could've happened for whatever reason. Doesn't matter). Hence, simply delete EVERYTHING
+                           under this 'TestNG' folder in the project [To do this, the only solution I have for now is:
+                           Right click on this 'TestNG' folder > Build Path >Remove from Build Path]. 
+                           Now, methods/test cases should be compiled using ONLY
+                           the TestNG version specified in the dependency present in maven (The pom.xml file). 
+                           
+      
+      Now, IMMEDIATELY (We're NOT done), install the TestNG plugging into Eclipse (A background on that is in the hand-written notes):
+      
+      	Help > Eclipse market Place  (Where all external plugging are present to download and integrate with Eclipse) > Type in: TestNG
+             > Download: "Download TestNG for Eclipse". 
+   
+      
+      Once testNG plugging is included in Eclipse, then one has the ability to right click on a .java class file that 
+      has at least one TestNg method/test case > Run As > TestNg (Should be present). 
+      
+      Now, right-click on the project > TestNG > Convert to TestNG (To create a testNG.xml file) > In Re-factoring window: You can choose 'Classes' option 
+      or 'packages' option as a way to include your TestNG methods/test cases. ===> Now, TestNG.xml file will be created which will include all the current methods/
+      test cases that ONLY utilize the TestNG compiler (Which is the only way in real-time projects). [Visit the hand-written notes for Maven & TestNg].
+      
+      Now, the next step is to integrate this testNg xml file with Maven (With the pom.xml file). This is done by including the SureFire plugging dependency
+      into maven (The pom.xml file). There are many versions of that SureFire Plugging dependency. But, the ONLY one that's useful for real-time
+      is the one with the 'profile' section inside it. [ where for example: a profile will have the id of 'regression' pointing to regressionTestNG.xml file &
+      a second profile section with id of 'smoke' for example pointing to smokeTestNg.xml file]
+      .... and now this Maven (pom.xml file) will be, in turn, integrated with a continuous integration tool such as Jenkins and things develop from there..!
+      
+      .Nevertheless, after including the SureFire plugging dependency, we're going to gradually include all other needed dependencies.
+      
+      So, include the Final Sure Fire Plugging dependency (With profiling feature):  [Note: A background on that is included in the hand-written notes].
+          In the Maven git repository, copy the sure fire plugging dependency [With changing the version to the latest one in ALL profile sectionS].
+          PLUS, in Maven (pom.xml file), delete any Sure Fire Plugging that might be automatically included (As a plugging, as is the case as of now).
+          
+      
+ =========================================================================================================================================================================
+ 
+               ******************************* An empty space to finish adding the steps of setting up a real-time Appium project*******************************
+               
+                                            *******************************To be added soon******************************* 
+                        
+                                                                     Below: Continue Appium scripting notes
+ 
+ =========================================================================================================================================================================     
+   
+   	Now, lets create our first .java class file (AppiumEmulatorBasicsTest) that simply:
+   	1- Starts the Appium Server programmatically.
+   	2- Installs the android App (.apk file) on a specific emulator in Android Studio.
+   	3- Closes the app & stops the Appium Server.
+ =====================================================================================================================================================================
+ Note: In a web page, each element has an associated <HTML code> that's highlighted in Blue.However;
+       In a mobile app, the terminology is that, each element has properties.
+       
+       Types of locators Appium supports FOR ANDROID:    id, accessibilityId, className, Xpath, androidUIAutomator
+       Note: resource-id attribute is the same as id.
+  
+To get 'Appium Inspector' :    
+ [Appium Inspector- A tool for finding the associated locators of each and every single element in a mobile app.]
+ 
+  Search, 'Appium Inspector" >> Go on their github official website (As of now: https://github.com/appium/appium-inspector) 
+  >> To install: Scroll down, and click on the 'Releases' section.
+  
+  >> For Windows users: Appium-Inspector-2024.9.1-win.exe  [After installation is complete: Pin it to Task Bar for a quick access].  
+  
+   Now, Launch the Appium Inspector >>
+        One needs to connect Appium Inspector to the specific device and the specific app within that specific device that we're going to automate.
+        To do this, use the following Json template [where current values represent 1 specific emulator in Android Studio..so adjust your values accordingly]
+                                                     
+        
+         
+   	{
+  "app": "\\Users\\AE\\eclipse-workspace\\Appium_Hardcoded_Examples\\src\\test\\java\\resources\\ApiDemos-debug.apk",
+  "deviceName": "AhmadDevice",
+  "platformName": "android",
+  "automationName": "uiAutomator2"
+    }
+  
+   				        
+  	    [Note: Such Json values SHOULD CORRESPOND to the going-to-be-executed lines of code in the base file where Appium Server is launched programmatically]===>
+  								        
+  	    UiAutomator2Options options= new UiAutomator2Options();
+		options.setDeviceName("AhmadDevice"); // From Android Studio, where I created an emulator.
+		options.setApp("C://Users//AE//eclipse-workspace//Appium_Hardcoded_Examples//src//test//java//resources//ApiDemos-debug.apk"); 
+  								        
+ So, Now: 
+          1-  Fill out all the fields in the Appium Inspector. PLUS IP:Port of Appium Server (As shown in logs when launching the server & is included in base file)
+          2-  Save As: "Device: AhmadDevice with app: ApiDemos-debug.apk"	
+          3- Manually Launch the Appium Server [ Then, you can use the Appium Inspector] That's a MUST every single time (to MANUALLY launch !)	
+          4- Launch Android Studio & Start the emulator.					        
+----------------------------------------------------------------------------------------------------------------------------------------------
+Driver.findElement(By. )       <==== Here,  By. locator methods come from Selenium jars + Appium jars.
+                                     
+                                       [This is because Appium is nothing but Selenium PLUS additional capabilities 
+                                       that support mobile gestures. Nevertheless, only locators allowed by Appium are usable]
+                                       
+                                       
+
+Driver.findElement(AppiumBy. )  <==== Here,  AppiumBy. locator methods come from Appium jars ONLY.
+			 *                                     ["AppiumBy." is  used for Appium Specific locators: accessibilityId & androidUIAutomator
+			                                         and also, as of now, className as By.className is rendering issues & might break in future Appium library versions !]
+---------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                 ** Observe**
+
+A- In selenium, for the following <HTML code>  :===>
+ <a id="Joining" href="https://courses.rahulshettyacademy.com/sign_up">JOIN NOW</a>
+
+ driver.findElement(By.id("Joining")).getText();  // returns "JOIN NOW"
+ 
+ 
+B- .HOWEVER, In Appium things are different: For the following mobile <HTML code> :===>
+  <android.widget.TextView  text="Azerbijan"  id="android:id/text1">
+
+driver.findElement(By.id("android:id/text1")).getText();  // returns "Azerbijan"    
+// This behavior can NEVER be applied to Selenium where the .getText() in Selenium will only get the text outside <HTML code> that's adjacent to it on the right side
+// as illustrated in "A"
+
+Also:
+driver.findElement(By.id("android:id/text1")).getAttribute("text");  // returns "Azerbijan" 
+Both are equally valid ways.
+ 
+PLUS for the Appium <HTML code> above, the text xpath will NEVER work. But, it will only work for the Selenium <HTML code>
+
+   	
+   	
+  		                                      
+  	                                     
+  
+ 
+ 
